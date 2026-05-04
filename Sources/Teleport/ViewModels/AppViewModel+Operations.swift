@@ -324,7 +324,8 @@ extension AppViewModel {
             let path = await usbService.resolvedPythonExecutablePathForDisplay()
         else {
             selectedUSBSetupGuide =
-                selectedDevice?.kind.isPhysicalDevice == true ? USBSetupGuide(resolvedPythonPath: nil) : nil
+                selectedDevice?.kind.isPhysicalDevice == true
+                ? USBSetupGuide(resolvedPythonPath: nil, installCommand: nil) : nil
             selectedPythonRuntimeNote = nil
             if selectedDevice?.kind.isPhysicalDevice == true {
                 TeleportLog.devices.debug("No resolved Python executable available for the selected physical device")
@@ -332,7 +333,8 @@ extension AppViewModel {
             return
         }
 
-        selectedUSBSetupGuide = USBSetupGuide(resolvedPythonPath: path)
+        let installCommand = await usbService.resolvedPythonInstallCommandForDisplay()
+        selectedUSBSetupGuide = USBSetupGuide(resolvedPythonPath: path, installCommand: installCommand)
         selectedPythonRuntimeNote = .localized(TeleportStrings.usbHelperPython(path))
         TeleportLog.devices.debug("Resolved physical-device helper Python executable at \(path, privacy: .public)")
     }

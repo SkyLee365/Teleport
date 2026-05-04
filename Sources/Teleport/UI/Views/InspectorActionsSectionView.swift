@@ -249,6 +249,10 @@ struct InspectorActionsSectionView: View {
     var body: some View {
         InspectorPanelSection("Actions") {
             VStack(alignment: .leading, spacing: 10) {
+                if viewModel.showsUSBApprovalReminder || viewModel.simulationState == .starting {
+                    PhysicalDeviceHelperCalloutView(viewModel: viewModel)
+                }
+
                 Button {
                     Task { await viewModel.refreshDevices() }
                 } label: {
@@ -326,5 +330,74 @@ struct InspectorActionsSectionView: View {
             }
             .controlSize(.large)
         }
+    }
+}
+
+fileprivate struct PhysicalDeviceHelperCalloutView: View {
+    @Bindable var viewModel: AppViewModel
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            leadingIndicator
+                .frame(width: 18, height: 18, alignment: .center)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.footnote.weight(.semibold))
+
+                Text(message)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(InspectorPanelVisualStyle.inlineFill)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .strokeBorder(borderColor)
+        )
+    }
+
+    @ViewBuilder
+    private var leadingIndicator: some View {
+        if viewModel.simulationState == .starting {
+            ProgressView()
+                .controlSize(.small)
+        } else {
+            Image(systemName: "lock.shield")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(.orange)
+        }
+    }
+
+    private var title: String {
+        if viewModel.simulationState == .starting {
+            return "Starting physical-device simulation"
+        }
+
+        return "Administrator approval is required for physical-device simulation."
+    }
+
+    private var message: String {
+        if viewModel.simulationState == .starting {
+            return "Teleport is connecting to the device and preparing the helper."
+        }
+
+        return
+            "Your password is requested in a separate macOS dialog. Teleport does not store, display, or reuse that password."
+    }
+
+    private var borderColor: Color {
+        if viewModel.simulationState == .starting {
+            return Color.blue.opacity(0.24)
+        }
+
+        return Color.orange.opacity(0.35)
     }
 }

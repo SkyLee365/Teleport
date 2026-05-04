@@ -2,22 +2,41 @@ import Foundation
 import OSLog
 
 final class USBDeviceSimulationRunner {
+    private struct ResolvedPythonEnvironment: Decodable {
+        let executable: String
+        let sitePaths: [String]
+        let installCommand: String
+
+        enum CodingKeys: String, CodingKey {
+            case executable
+            case sitePaths = "site_paths"
+            case installCommand = "install_command"
+        }
+    }
+
     private let sudoURL: URL
     private let shellURL: URL
+    private let envURL: URL
 
     private var simulationHelper: USBSimulationHelper?
-    private var resolvedPythonExecutableURL: URL?
+    private var cachedResolvedPythonEnvironment: ResolvedPythonEnvironment?
 
     init(
         sudoURL: URL = URL(fileURLWithPath: "/usr/bin/sudo"),
-        shellURL: URL = URL(fileURLWithPath: ProcessInfo.processInfo.environment["SHELL"] ?? "/bin/zsh")
+        shellURL: URL = URL(fileURLWithPath: ProcessInfo.processInfo.environment["SHELL"] ?? "/bin/zsh"),
+        envURL: URL = URL(fileURLWithPath: "/usr/bin/env")
     ) {
         self.sudoURL = sudoURL
         self.shellURL = shellURL
+        self.envURL = envURL
     }
 
     func resolvedPythonExecutablePathForDisplay() -> String? {
-        try? resolvedPythonExecutable().path
+        try? resolvedHelperPythonEnvironment().executable
+    }
+
+    func resolvedPythonInstallCommandForDisplay() -> String? {
+        try? resolvedHelperPythonEnvironment().installCommand
     }
 
     func hasActiveSimulationSession() -> Bool {
@@ -129,9 +148,9 @@ final class USBDeviceSimulationRunner {
             "Cleared physical-device simulated location for \(device.logLabel, privacy: .public)")
     }
 
-    private func resolvedPythonExecutable() throws -> URL {
-        if let resolvedPythonExecutableURL {
-            return resolvedPythonExecutableURL
+    private func resolvedHelperPythonEnvironment() throws -> ResolvedPythonEnvironment {
+        if let cachedResolvedPythonEnvironment {
+            return cachedResolvedPythonEnvironment
         }
 
         TeleportLog.devices.debug("Resolving python3 executable for the physical-device helper")
@@ -139,23 +158,39 @@ final class USBDeviceSimulationRunner {
             shellURL,
             arguments: ["-lc", USBDeviceScript.pythonResolutionCommand]
         )
-        let path = output.stdoutString.trimmingCharacters(in: .whitespacesAndNewlines)
+        let environment = try JSONDecoder().decode(ResolvedPythonEnvironment.self, from: output.stdout)
+        let executablePath = environment.executable.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        guard path.hasPrefix("/") else {
+        guard executablePath.hasPrefix("/") else {
             throw ServiceError.unavailable(
                 String(localized: TeleportStrings.unableToResolvePython3(from: shellURL.lastPathComponent))
             )
         }
 
-        guard FileManager.default.isExecutableFile(atPath: path) else {
-            throw ServiceError.unavailable(String(localized: TeleportStrings.pythonPathNotExecutable(path)))
+        guard FileManager.default.isExecutableFile(atPath: executablePath) else {
+            throw ServiceError.unavailable(
+                String(localized: TeleportStrings.pythonPathNotExecutable(executablePath))
+            )
         }
 
-        let resolvedURL = URL(fileURLWithPath: path)
-        resolvedPythonExecutableURL = resolvedURL
-        TeleportLog.devices.info(
-            "Resolved python3 executable for the physical-device helper at \(path, privacy: .public)")
-        return resolvedURL
+        let resolvedEnvironment = ResolvedPythonEnvironment(
+            executable: executablePath,
+            sitePaths: normalizedSitePaths(environment.sitePaths),
+            installCommand: environment.installCommand.trimmingCharacters(in: .whitespacesAndNewlines)
+        )
+        cachedResolvedPythonEnvironment = resolvedEnvironment
+
+        if resolvedEnvironment.sitePaths.isEmpty {
+            TeleportLog.devices.info(
+                "Resolved python3 executable for the physical-device helper at \(executablePath, privacy: .public) without extra site-package paths"
+            )
+        } else {
+            TeleportLog.devices.info(
+                "Resolved python3 executable for the physical-device helper at \(executablePath, privacy: .public) with \(resolvedEnvironment.sitePaths.count) preserved site-package path(s)"
+            )
+        }
+
+        return resolvedEnvironment
     }
 
     private func makeSimulationHelper(
@@ -164,7 +199,7 @@ final class USBDeviceSimulationRunner {
         coordinate: LocationCoordinate?
     ) throws -> (helper: USBSimulationHelper, administratorPassword: String?) {
         let helperFiles = try USBDeviceScript.makeHelperFiles()
-        let pythonExecutableURL = try resolvedPythonExecutable()
+        let pythonEnvironment = try resolvedHelperPythonEnvironment()
         let administratorPassword = try administratorPasswordIfNeeded(using: helperFiles.promptScriptURL)
         let process = Process()
         let stdinPipe = Pipe()
@@ -173,10 +208,13 @@ final class USBDeviceSimulationRunner {
 
         process.executableURL = sudoURL
         process.arguments =
-            ["-S", "-p", "", pythonExecutableURL.path]
+            ["-S", "-p", "", envURL.path]
+            + helperEnvironmentAssignments(sitePaths: pythonEnvironment.sitePaths)
+            + [pythonEnvironment.executable]
             + USBDeviceScript.helperArguments(
                 mode: mode,
                 device: device,
+                installCommand: pythonEnvironment.installCommand,
                 coordinate: coordinate,
                 statusURL: helperFiles.statusURL,
                 stopURL: helperFiles.stopURL
@@ -251,6 +289,40 @@ final class USBDeviceSimulationRunner {
 
         let command = "SET \(coordinate.latitude) \(coordinate.longitude)\n"
         try helper.stdin.write(contentsOf: Data(command.utf8))
+    }
+
+    private func normalizedSitePaths(_ paths: [String]) -> [String] {
+        var normalizedPaths: [String] = []
+
+        for path in paths.map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) }) where path.hasPrefix("/") {
+            if !normalizedPaths.contains(path) {
+                normalizedPaths.append(path)
+            }
+        }
+
+        return normalizedPaths
+    }
+
+    private func helperEnvironmentAssignments(sitePaths: [String]) -> [String] {
+        var combinedPaths: [String] = []
+
+        if let existingPythonPath = ProcessInfo.processInfo.environment["PYTHONPATH"] {
+            for path in existingPythonPath.split(separator: ":").map(String.init) where !path.isEmpty {
+                if !combinedPaths.contains(path) {
+                    combinedPaths.append(path)
+                }
+            }
+        }
+
+        for path in sitePaths where !combinedPaths.contains(path) {
+            combinedPaths.append(path)
+        }
+
+        guard !combinedPaths.isEmpty else {
+            return []
+        }
+
+        return ["PYTHONPATH=\(combinedPaths.joined(separator: ":"))"]
     }
 
     private func stopSimulationHelper() async throws {

@@ -1,14 +1,53 @@
 import Foundation
 
 enum USBDeviceScript {
-    static let pythonResolutionCommand =
-        #"python3 -c 'import os, sys; print(os.path.realpath(sys.executable))'"#
+    static let pythonResolutionCommand = #"""
+        python3 <<'PYTHON'
+        import json
+        import os
+        import shlex
+        import site
+        import sys
+
+        executable = os.path.realpath(sys.executable)
+        is_venv = getattr(sys, "base_prefix", sys.prefix) != sys.prefix or hasattr(sys, "real_prefix")
+        site_paths = [
+            path
+            for path in sys.path
+            if isinstance(path, str)
+            and os.path.isabs(path)
+            and ("site-packages" in path or "dist-packages" in path)
+        ]
+
+        try:
+            global_site_paths = [path for path in site.getsitepackages() if os.path.isabs(path)]
+        except AttributeError:
+            global_site_paths = []
+
+        prefers_user_install = (not is_venv) and (
+            not global_site_paths or not any(os.access(path, os.W_OK) for path in global_site_paths)
+        )
+        install_command_parts = [shlex.quote(executable), "-m", "pip", "install"]
+        if prefers_user_install:
+            install_command_parts.append("--user")
+        install_command_parts.append("pymobiledevice3")
+
+        print(
+            json.dumps(
+                {
+                    "executable": executable,
+                    "site_paths": site_paths,
+                    "install_command": " ".join(install_command_parts),
+                }
+            )
+        )
+        PYTHON
+        """#
 
     static let pythonHelperScript = #"""
         import asyncio
         import os
         import re
-        import shlex
         import sys
 
 
@@ -26,6 +65,27 @@ enum USBDeviceScript {
 
         def mark_ready(status_path):
             write_status(status_path, "READY")
+
+
+        def dvt_provider_class():
+            try:
+                from pymobiledevice3.services.dvt.instruments.dvt_provider import DvtProvider
+                return DvtProvider
+            except ModuleNotFoundError as error:
+                if error.name != "pymobiledevice3.services.dvt.instruments.dvt_provider":
+                    raise
+                from pymobiledevice3.services.dvt.dvt_secure_socket_proxy import DvtSecureSocketProxyService
+                return DvtSecureSocketProxyService
+
+
+        async def connected_location_simulation(dvt):
+            from pymobiledevice3.services.dvt.instruments.location_simulation import LocationSimulation
+
+            simulation = LocationSimulation(dvt)
+            connect = getattr(simulation, "connect", None)
+            if connect is not None:
+                await connect()
+            return simulation
 
 
         async def session_command_loop(simulation, stop_path):
@@ -69,15 +129,15 @@ enum USBDeviceScript {
 
         async def run_pre_ios17(mode, udid, connection_type, status_path, stop_path, latitude, longitude):
             from pymobiledevice3.lockdown import create_using_usbmux
-            from pymobiledevice3.services.dvt.dvt_secure_socket_proxy import DvtSecureSocketProxyService
-            from pymobiledevice3.services.dvt.instruments.location_simulation import LocationSimulation
+
+            DvtProvider = dvt_provider_class()
 
             write_status(status_path, "LOCKDOWN")
             lockdown = await create_using_usbmux(udid, connection_type=connection_type, autopair=True)
             try:
                 write_status(status_path, "DVT")
-                async with DvtSecureSocketProxyService(lockdown) as dvt:
-                    simulation = LocationSimulation(dvt)
+                async with DvtProvider(lockdown) as dvt:
+                    simulation = await connected_location_simulation(dvt)
                     await simulation.clear()
                     if mode == "set":
                         await simulation.set(latitude, longitude)
@@ -94,8 +154,8 @@ enum USBDeviceScript {
             from pymobiledevice3.remote.remote_service_discovery import RemoteServiceDiscoveryService
             from pymobiledevice3.remote.tunnel_service import get_remote_pairing_tunnel_services
             from pymobiledevice3.remote.utils import resume_remoted_if_required, stop_remoted_if_required
-            from pymobiledevice3.services.dvt.dvt_secure_socket_proxy import DvtSecureSocketProxyService
-            from pymobiledevice3.services.dvt.instruments.location_simulation import LocationSimulation
+
+            DvtProvider = dvt_provider_class()
 
             stop_remoted_if_required()
             service_provider = None
@@ -115,8 +175,8 @@ enum USBDeviceScript {
                     write_status(status_path, "RSD")
                     async with RemoteServiceDiscoveryService((tunnel_result.address, tunnel_result.port)) as rsd:
                         write_status(status_path, "DVT")
-                        async with DvtSecureSocketProxyService(rsd) as dvt:
-                            simulation = LocationSimulation(dvt)
+                        async with DvtProvider(rsd) as dvt:
+                            simulation = await connected_location_simulation(dvt)
                             await simulation.clear()
                             if mode == "set":
                                 await simulation.set(latitude, longitude)
@@ -134,8 +194,8 @@ enum USBDeviceScript {
             from pymobiledevice3.lockdown import create_using_usbmux
             from pymobiledevice3.remote.remote_service_discovery import RemoteServiceDiscoveryService
             from pymobiledevice3.remote.tunnel_service import CoreDeviceTunnelProxy
-            from pymobiledevice3.services.dvt.dvt_secure_socket_proxy import DvtSecureSocketProxyService
-            from pymobiledevice3.services.dvt.instruments.location_simulation import LocationSimulation
+
+            DvtProvider = dvt_provider_class()
 
             write_status(status_path, "LOCKDOWN")
             lockdown = await create_using_usbmux(udid, connection_type=connection_type, autopair=True)
@@ -147,8 +207,8 @@ enum USBDeviceScript {
                     write_status(status_path, "RSD")
                     async with RemoteServiceDiscoveryService((tunnel_result.address, tunnel_result.port)) as rsd:
                         write_status(status_path, "DVT")
-                        async with DvtSecureSocketProxyService(rsd) as dvt:
-                            simulation = LocationSimulation(dvt)
+                        async with DvtProvider(rsd) as dvt:
+                            simulation = await connected_location_simulation(dvt)
                             await simulation.clear()
                             if mode == "set":
                                 await simulation.set(latitude, longitude)
@@ -168,8 +228,9 @@ enum USBDeviceScript {
             status_path = sys.argv[4]
             stop_path = sys.argv[5]
             device_kind = sys.argv[6]
-            latitude = float(sys.argv[7]) if mode == "set" else None
-            longitude = float(sys.argv[8]) if mode == "set" else None
+            install_command = sys.argv[7]
+            latitude = float(sys.argv[8]) if mode == "set" else None
+            longitude = float(sys.argv[9]) if mode == "set" else None
 
             parsed_version = parse_version(version)
             connection_type = "USB" if device_kind == "physicalUSB" else "Network"
@@ -187,8 +248,8 @@ enum USBDeviceScript {
         try:
             asyncio.run(main())
         except ModuleNotFoundError as error:
-            if error.name and error.name.startswith("pymobiledevice3"):
-                install_command = f"{shlex.quote(sys.executable)} -m pip install pymobiledevice3"
+            if error.name == "pymobiledevice3":
+                install_command = sys.argv[7] if len(sys.argv) > 7 else sys.executable
                 print("pymobiledevice3 is not installed for the resolved Python executable.", file=sys.stderr)
                 print(f"Resolved Python: {sys.executable}", file=sys.stderr)
                 print(f"Install command: {install_command}", file=sys.stderr)
@@ -218,13 +279,14 @@ enum USBDeviceScript {
     static func helperArguments(
         mode: String,
         device: Device,
+        installCommand: String,
         coordinate: LocationCoordinate?,
         statusURL: URL,
         stopURL: URL
     ) -> [String] {
         var arguments = [
             "-u", "-c", pythonHelperScript, mode, device.id, device.osVersion, statusURL.path, stopURL.path,
-            device.kind.rawValue
+            device.kind.rawValue, installCommand
         ]
 
         if let coordinate {

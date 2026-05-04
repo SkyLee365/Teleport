@@ -43,13 +43,18 @@ struct MovementControlVector: Equatable, Sendable {
 
 struct USBSetupGuide: Equatable {
     let resolvedPythonPath: String?
+    let installCommand: String?
 
     var pythonInstallCommand: String {
-        if let resolvedPythonPath {
-            return Self.shellQuoted(resolvedPythonPath) + " -m pip install pymobiledevice3"
+        if let installCommand, !installCommand.isEmpty {
+            return installCommand
         }
 
-        return "python3 -m pip install pymobiledevice3"
+        if let resolvedPythonPath {
+            return Self.shellQuoted(resolvedPythonPath) + " -m pip install --user pymobiledevice3"
+        }
+
+        return "python3 -m pip install --user pymobiledevice3"
     }
 
     var pythonStatusText: String {

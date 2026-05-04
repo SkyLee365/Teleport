@@ -11,15 +11,6 @@ struct InspectorPanelView: View {
                 InspectorPanelHeaderView(selectedDeviceName: viewModel.selectedDevice?.name)
                 InspectorDeviceSectionView(viewModel: viewModel)
                 InspectorSessionStateSectionView(viewModel: viewModel)
-
-                if viewModel.showsUSBApprovalReminder {
-                    InspectorUSBApprovalNoticeView()
-                }
-
-                if case .starting = viewModel.simulationState {
-                    InspectorAuthorizationProgressView()
-                }
-
                 InspectorActionsSectionView(viewModel: viewModel)
                 InspectorRouteSectionView(
                     viewModel: viewModel,

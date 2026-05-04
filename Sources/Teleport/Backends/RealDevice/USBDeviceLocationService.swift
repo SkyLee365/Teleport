@@ -46,6 +46,10 @@ actor USBDeviceLocationService: LocationSimulationService {
         simulationRunner.resolvedPythonExecutablePathForDisplay()
     }
 
+    func resolvedPythonInstallCommandForDisplay() -> String? {
+        simulationRunner.resolvedPythonInstallCommandForDisplay()
+    }
+
     func connect(to device: Device) async throws {
         guard device.isAvailable else {
             TeleportLog.devices.warning(

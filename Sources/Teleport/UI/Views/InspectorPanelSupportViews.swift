@@ -1,6 +1,46 @@
 import AppKit
 import SwiftUI
 
+enum InspectorPanelVisualStyle {
+    static let sectionFill = dynamicColor(
+        light: NSColor.black.withAlphaComponent(0.045),
+        dark: NSColor.white.withAlphaComponent(0.07)
+    )
+    static let sectionStroke = dynamicColor(
+        light: NSColor.black.withAlphaComponent(0.08),
+        dark: NSColor.white.withAlphaComponent(0.10)
+    )
+    static let sectionShadow = dynamicColor(
+        light: NSColor.black.withAlphaComponent(0.05),
+        dark: NSColor.black.withAlphaComponent(0.22)
+    )
+    static let inlineFill = dynamicColor(
+        light: NSColor.black.withAlphaComponent(0.035),
+        dark: NSColor.white.withAlphaComponent(0.055)
+    )
+    static let inlineStroke = dynamicColor(
+        light: NSColor.black.withAlphaComponent(0.06),
+        dark: NSColor.white.withAlphaComponent(0.08)
+    )
+    static let codeFill = dynamicColor(
+        light: NSColor.black.withAlphaComponent(0.055),
+        dark: NSColor.white.withAlphaComponent(0.08)
+    )
+
+    private static func dynamicColor(light: NSColor, dark: NSColor) -> Color {
+        Color(
+            nsColor: NSColor(name: nil) { appearance in
+                switch appearance.bestMatch(from: [.darkAqua, .aqua]) {
+                case .darkAqua:
+                    return dark
+                default:
+                    return light
+                }
+            }
+        )
+    }
+}
+
 struct InspectorPanelSection<Content: View>: View {
     let title: LocalizedStringResource?
     let isExpanded: Binding<Bool>?
@@ -62,12 +102,13 @@ struct InspectorPanelSection<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color(NSColor.controlBackgroundColor))
+                .fill(InspectorPanelVisualStyle.sectionFill)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.06))
+                .strokeBorder(InspectorPanelVisualStyle.sectionStroke)
         )
+        .shadow(color: InspectorPanelVisualStyle.sectionShadow, radius: 10, y: 4)
     }
 }
 
@@ -106,11 +147,11 @@ struct InspectorInlineDisclosure<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color.primary.opacity(0.035))
+                .fill(InspectorPanelVisualStyle.inlineFill)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.05))
+                .strokeBorder(InspectorPanelVisualStyle.inlineStroke)
         )
     }
 }
@@ -132,7 +173,7 @@ struct PythonDependencyInstallSheet: View {
                         .font(.title3.weight(.semibold))
 
                     Text(
-                        "Physical-device simulation needs pymobiledevice3 in the exact Python interpreter selected for the helper."
+                        "Physical-device simulation needs pymobiledevice3 in the exact Python interpreter selected for the helper. Install it as your normal macOS user so Teleport can reuse that package path after administrator approval."
                     )
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -156,10 +197,12 @@ struct PythonDependencyInstallSheet: View {
                 SelectableCodeRow(text: guide.installCommand)
             }
 
-            Text("Run the command in Terminal, then return here and retry the physical-device location action.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+            Text(
+                "Run the command in Terminal as your normal macOS user, then return here and retry the physical-device location action."
+            )
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
 
             HStack(spacing: 10) {
                 Button("Copy Command") {
@@ -191,7 +234,11 @@ struct SelectableCodeRow: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color.primary.opacity(0.06))
+                    .fill(InspectorPanelVisualStyle.codeFill)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .strokeBorder(InspectorPanelVisualStyle.inlineStroke)
             )
     }
 }
@@ -338,7 +385,8 @@ struct USBOnboardingSheet: View {
                 )
                 SimpleSecurityRow(
                     icon: "shippingbox",
-                    text: "Install pymobiledevice3 into the same Python interpreter used by the device helper."
+                    text:
+                        "Install pymobiledevice3 for the same Python interpreter used by the device helper. The command below is meant to run as your normal macOS user."
                 )
                 SimpleSecurityRow(
                     icon: "wifi",
@@ -354,7 +402,11 @@ struct USBOnboardingSheet: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(Color(NSColor.controlBackgroundColor))
+                    .fill(InspectorPanelVisualStyle.inlineFill)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(InspectorPanelVisualStyle.inlineStroke)
             )
 
             VStack(alignment: .leading, spacing: 8) {
@@ -391,7 +443,7 @@ struct USBOnboardingSheet: View {
             }
 
             Text(
-                "Run the install command in Terminal if needed, then continue. You can copy the command directly from this sheet."
+                "Run the install command in Terminal as your normal macOS user if needed, then continue. You can copy the command directly from this sheet."
             )
             .font(.footnote)
             .foregroundStyle(.secondary)
