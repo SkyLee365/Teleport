@@ -4,6 +4,12 @@
 
 All notable changes to Teleport are documented in this file.
 
+## v0.3.1 - 2026-05-04
+
+### Fixed
+
+- Fixed the physical-device Python resolution path so the helper reliably finds a usable interpreter.
+
 ## v0.3.0 - 2026-03-14
 
 ### Added
