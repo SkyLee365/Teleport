@@ -4,6 +4,12 @@
 
 All notable changes to Teleport are documented in this file.
 
+## v0.3.2 - 2026-05-13
+
+### Fixed
+
+- Clarified the physical-device `pymobiledevice3` install flow so the helper and Terminal instructions consistently point at the same Python interpreter and normal macOS user account.
+
 ## v0.3.1 - 2026-05-04
 
 ### Fixed
