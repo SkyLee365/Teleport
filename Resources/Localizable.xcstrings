@@ -893,6 +893,16 @@
         }
       }
     },
+    "Fix Command" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修复命令"
+          }
+        }
+      }
+    },
     "Fixed" : {
       "localizations" : {
         "zh-Hans" : {
@@ -984,6 +994,7 @@
       }
     },
     "Install Command" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -993,7 +1004,48 @@
         }
       }
     },
+    "Install or Upgrade Command" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装或升级命令"
+          }
+        }
+      }
+    },
+    "Install or Upgrade pymobiledevice3" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装或升级 pymobiledevice3"
+          }
+        }
+      }
+    },
+    "Install or upgrade pymobiledevice3 5.0 or newer for the same Python interpreter used by the device helper. The command below is meant to run as your normal macOS user." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请为设备辅助程序使用的同一个 Python 解释器安装或升级到 pymobiledevice3 5.0 或更高版本。下面的命令应以你当前的 macOS 普通用户身份运行。"
+          }
+        }
+      }
+    },
+    "Install or upgrade pymobiledevice3 for the selected Python interpreter to continue physical-device location simulation." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请为所选 Python 解释器安装或升级 pymobiledevice3，以继续进行真机位置模拟。"
+          }
+        }
+      }
+    },
     "Install pymobiledevice3" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1003,10 +1055,8 @@
         }
       }
     },
-    "Install pymobiledevice3 for the same Python interpreter used by the device helper. The command below is meant to run as your normal macOS user." : {
-
-    },
     "Install pymobiledevice3 for the selected Python interpreter to continue physical-device location simulation." : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1043,6 +1093,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请安装 Xcode 并启动一次，以便 Apple 的开发者工具完成设置，并让 `xcrun` 可以访问真机和模拟器工具。"
+          }
+        }
+      }
+    },
+    "Installed pymobiledevice3: %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已安装的 pymobiledevice3：%@"
+          }
+        }
+      }
+    },
+    "Installed Version" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已安装版本"
           }
         }
       }
@@ -1143,7 +1213,28 @@
         }
       }
     },
+    "Minimum supported pymobiledevice3: %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最低支持的 pymobiledevice3：%@"
+          }
+        }
+      }
+    },
+    "Minimum Supported Version" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最低支持版本"
+          }
+        }
+      }
+    },
     "Missing Python dependency" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1329,6 +1420,16 @@
         }
       }
     },
+    "Physical-device simulation needs pymobiledevice3 5.0 or newer in the exact Python interpreter selected for the helper. Run the fix command as your normal macOS user so Teleport can reuse that package path after administrator approval." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "真机模拟要求在为辅助程序选定的那个 Python 解释器中安装 pymobiledevice3 5.0 或更高版本。请以你当前的 macOS 普通用户身份运行修复命令，这样 Teleport 才能在获得管理员授权后复用该包路径。"
+          }
+        }
+      }
+    },
     "Physical-device simulation needs pymobiledevice3 in the exact Python interpreter selected for the helper." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1340,8 +1441,15 @@
         }
       }
     },
-    "Physical-device simulation needs pymobiledevice3 in the exact Python interpreter selected for the helper. Install it as your normal macOS user so Teleport can reuse that package path after administrator approval." : {
-
+    "Physical-device simulation requires pymobiledevice3 %@ or newer." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "真机模拟需要 pymobiledevice3 %@ 或更高版本。"
+          }
+        }
+      }
     },
     "Play" : {
       "localizations" : {
@@ -1410,11 +1518,32 @@
       }
     },
     "pymobiledevice3 is missing for the Python executable used by physical-device simulation." : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "用于真机位置模拟的 Python 可执行文件缺少 pymobiledevice3。"
+          }
+        }
+      }
+    },
+    "pymobiledevice3 is not installed for the Python executable used by physical-device simulation." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用于真机模拟的那个 Python 可执行文件尚未安装 pymobiledevice3。"
+          }
+        }
+      }
+    },
+    "Python dependency issue" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Python 依赖问题"
           }
         }
       }
@@ -1659,8 +1788,25 @@
         }
       }
     },
+    "Run the command in Terminal as your normal macOS user if needed, then continue. You can copy it directly from this sheet." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如有需要，请以你当前的 macOS 普通用户身份在终端中运行该命令，然后继续。你可以直接从此面板复制该命令。"
+          }
+        }
+      }
+    },
     "Run the command in Terminal as your normal macOS user, then return here and retry the physical-device location action." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请以你当前的 macOS 普通用户身份在终端中运行该命令，然后返回此处重试真机位置操作。"
+          }
+        }
+      }
     },
     "Run the command in Terminal, then return here and retry the physical-device location action." : {
       "extractionState" : "stale",
@@ -1672,9 +1818,6 @@
           }
         }
       }
-    },
-    "Run the install command in Terminal as your normal macOS user if needed, then continue. You can copy the command directly from this sheet." : {
-
     },
     "Run the install command in Terminal if needed, then continue. You can copy the command directly from this sheet." : {
       "extractionState" : "stale",
@@ -2109,6 +2252,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "管理员密码不正确。请检查密码后重试。"
+          }
+        }
+      }
+    },
+    "The installed pymobiledevice3 version is too old for physical-device simulation." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已安装的 pymobiledevice3 版本过旧，无法用于真机模拟。"
           }
         }
       }

@@ -4,6 +4,17 @@
 
 All notable changes to Teleport are documented in this file.
 
+## v0.4.0 - 2026-05-15
+
+### Changed
+
+- Tightened the physical-device `pymobiledevice3` requirement to `5.0` or newer, and updated the helper, in-app guidance, and documentation to steer upgrades through the exact Python interpreter Teleport resolved.
+
+### Fixed
+
+- Fixed physical-device helper startup across supported `pymobiledevice3` releases by handling older and newer async API shapes consistently while stopping unsupported pre-`5.0` installs before tunnel startup.
+- Fixed CoreDevice physical-device discovery parsing so devices still load when `devicectl` omits non-essential fields from the JSON payload.
+
 ## v0.3.2 - 2026-05-13
 
 ### Fixed

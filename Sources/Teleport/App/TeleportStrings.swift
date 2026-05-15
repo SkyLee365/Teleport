@@ -13,9 +13,9 @@ enum TeleportStrings {
         "Administrator approval was canceled before the macOS password prompt."
     static let disconnectedAndClearedLocations: LocalizedStringResource =
         "Disconnected and cleared simulated locations."
-    static let missingPythonDependency: LocalizedStringResource = "Missing Python dependency"
-    static let installPythonDependency: LocalizedStringResource =
-        "Install pymobiledevice3 for the selected Python interpreter to continue physical-device location simulation."
+    static let pythonDependencyIssue: LocalizedStringResource = "Python dependency issue"
+    static let fixPythonDependency: LocalizedStringResource =
+        "Install or upgrade pymobiledevice3 for the selected Python interpreter to continue physical-device location simulation."
     static let selectDeviceFirst: LocalizedStringResource = "Select a device first."
     static let pythonUnavailableInShell: LocalizedStringResource =
         "python3 is not currently resolving from your shell. Install Python 3 first, then refresh devices."
@@ -159,7 +159,9 @@ enum TeleportStrings {
     static let selectUSBDeviceToResolvePython: LocalizedStringResource =
         "Select a physical device to resolve the helper Python interpreter."
     static let pythonDependencyMissingIntro: LocalizedStringResource =
-        "pymobiledevice3 is missing for the Python executable used by physical-device simulation."
+        "pymobiledevice3 is not installed for the Python executable used by physical-device simulation."
+    static let pythonDependencyOutdatedIntro: LocalizedStringResource =
+        "The installed pymobiledevice3 version is too old for physical-device simulation."
     static let retryUSBLocationAction: LocalizedStringResource = "Then retry the physical-device location action."
     static let usbSudoPrompt: LocalizedStringResource =
         "Teleport requires administrator privileges for physical-device location simulation."
@@ -337,5 +339,17 @@ enum TeleportStrings {
 
     static func runCommandLine(_ command: String) -> LocalizedStringResource {
         "Run: \(command)"
+    }
+
+    static func pythonDependencyRequirementIntro(_ version: String) -> LocalizedStringResource {
+        "Physical-device simulation requires pymobiledevice3 \(version) or newer."
+    }
+
+    static func installedPythonDependencyVersionLine(_ version: String) -> LocalizedStringResource {
+        "Installed pymobiledevice3: \(version)"
+    }
+
+    static func minimumSupportedPythonDependencyVersionLine(_ version: String) -> LocalizedStringResource {
+        "Minimum supported pymobiledevice3: \(version)"
     }
 }
