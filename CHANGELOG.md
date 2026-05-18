@@ -4,6 +4,12 @@
 
 All notable changes to Teleport are documented in this file.
 
+## v0.4.1 - 2026-05-18
+
+### Added
+
+- Added saved locations in the map workspace, with a panel for saving the current coordinate, browsing stored locations, renaming entries, copying coordinates, and deleting saved items.
+
 ## v0.4.0 - 2026-05-15
 
 ### Changed
