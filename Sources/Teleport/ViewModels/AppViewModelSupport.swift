@@ -3,6 +3,7 @@ import Foundation
 enum AppViewModelPreferences {
     static let suppressUSBPrivilegeNotice = "suppressUSBPrivilegeNotice"
     static let savedRoutes = "savedRoutes"
+    static let savedLocations = "savedLocations"
 }
 
 struct MovementControlVector: Equatable, Sendable {

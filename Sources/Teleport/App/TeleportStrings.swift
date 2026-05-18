@@ -38,6 +38,12 @@ enum TeleportStrings {
     static let routeEdit: LocalizedStringResource = "Edit"
     static let routeExportGPX: LocalizedStringResource = "Export GPX"
     static let routeClear: LocalizedStringResource = "Clear Route"
+    static let savedLocationsTitle: LocalizedStringResource = "Saved Locations"
+    static let savedLocationsEmptyState: LocalizedStringResource = "No saved locations yet."
+    static let saveLocation: LocalizedStringResource = "Save Location"
+    static let newLocationName: LocalizedStringResource = "New Location"
+    static let savedLocationRename: LocalizedStringResource = "Rename"
+    static let savedLocationDelete: LocalizedStringResource = "Delete"
     static let savedRoutesTitle: LocalizedStringResource = "Saved Routes"
     static let savedRouteLoad: LocalizedStringResource = "Load"
     static let savedRouteRename: LocalizedStringResource = "Rename"
@@ -186,8 +192,14 @@ enum TeleportStrings {
         "Wait for the current navigation segment to finish loading."
     static let routeBuilderEditOnlyUserCreated: LocalizedStringResource =
         "Editing is only available for user-created routes."
+    static let saveLocationPromptTitle: LocalizedStringResource = "Save Location"
+    static let saveLocationPromptMessage: LocalizedStringResource =
+        "Choose a name for the saved location."
     static let saveRoutePromptTitle: LocalizedStringResource = "Save Route in App"
     static let saveRoutePromptMessage: LocalizedStringResource = "Choose a name for the saved route."
+    static let renameLocationPromptTitle: LocalizedStringResource = "Rename Saved Location"
+    static let renameLocationPromptMessage: LocalizedStringResource =
+        "Enter a new name for this saved location."
     static let renameRoutePromptTitle: LocalizedStringResource = "Rename Saved Route"
     static let renameRoutePromptMessage: LocalizedStringResource = "Enter a new name for this saved route."
 
@@ -243,6 +255,10 @@ enum TeleportStrings {
         "Saved \(name) in the app."
     }
 
+    static func savedLocationInApp(_ name: String) -> LocalizedStringResource {
+        "Saved location \(name)."
+    }
+
     static func updatedSavedRouteInApp(_ name: String) -> LocalizedStringResource {
         "Updated saved route \(name)."
     }
@@ -255,12 +271,28 @@ enum TeleportStrings {
         "Loaded saved route \(name)."
     }
 
+    static func loadedSavedLocation(_ name: String) -> LocalizedStringResource {
+        "Loaded saved location \(name)."
+    }
+
     static func renamedSavedRoute(_ name: String) -> LocalizedStringResource {
         "Renamed saved route to \(name)."
     }
 
+    static func renamedSavedLocation(_ name: String) -> LocalizedStringResource {
+        "Renamed saved location to \(name)."
+    }
+
     static func deletedSavedRoute(_ name: String) -> LocalizedStringResource {
         "Deleted saved route \(name)."
+    }
+
+    static func deletedSavedLocation(_ name: String) -> LocalizedStringResource {
+        "Deleted saved location \(name)."
+    }
+
+    static func copiedSavedLocationCoordinates(_ name: String) -> LocalizedStringResource {
+        "Copied coordinates for \(name)."
     }
 
     static func exportedRouteAsGPX(_ name: String) -> LocalizedStringResource {

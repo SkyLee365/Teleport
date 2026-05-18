@@ -273,6 +273,16 @@
         }
       }
     },
+    "Choose a name for the saved location." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为这个已保存位置命名。"
+          }
+        }
+      }
+    },
     "Choose a physical device or simulator from the sidebar." : {
       "localizations" : {
         "zh-Hans" : {
@@ -473,6 +483,16 @@
         }
       }
     },
+    "Copied coordinates for %@." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制 %@ 的坐标。"
+          }
+        }
+      }
+    },
     "Copy Command" : {
       "localizations" : {
         "zh-Hans" : {
@@ -559,6 +579,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已删除已保存路线 %@。"
+          }
+        }
+      }
+    },
+    "Deleted saved location %@." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已删除已保存位置 %@。"
           }
         }
       }
@@ -769,6 +799,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "为这条已保存路线输入新名称。"
+          }
+        }
+      }
+    },
+    "Enter a new name for this saved location." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为这个已保存位置输入新名称。"
           }
         }
       }
@@ -1183,6 +1223,16 @@
         }
       }
     },
+    "Loaded saved location %@." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已加载已保存位置 %@。"
+          }
+        }
+      }
+    },
     "Longitude" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1296,6 +1346,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "导航模式会向 Apple 地图请求每两个已点按停靠点之间的推荐道路路线。"
+          }
+        }
+      }
+    },
+    "No saved locations yet." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有已保存位置。"
+          }
+        }
+      }
+    },
+    "New Location" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新位置"
           }
         }
       }
@@ -1648,12 +1718,32 @@
         }
       }
     },
+    "Rename Saved Location" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重命名已保存位置"
+          }
+        }
+      }
+    },
     "Renamed saved route to %@." : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "已将已保存路线重命名为 %@。"
+          }
+        }
+      }
+    },
+    "Renamed saved location to %@." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已将已保存位置重命名为 %@。"
           }
         }
       }
@@ -1880,6 +1970,16 @@
         }
       }
     },
+    "Save Location" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存位置"
+          }
+        }
+      }
+    },
     "Saved %@ as a new route." : {
       "localizations" : {
         "zh-Hans" : {
@@ -1896,6 +1996,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已将 %@ 保存在应用中。"
+          }
+        }
+      }
+    },
+    "Saved location %@." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已保存位置 %@。"
+          }
+        }
+      }
+    },
+    "Saved Locations" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已保存位置"
           }
         }
       }

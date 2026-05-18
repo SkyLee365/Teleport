@@ -41,6 +41,8 @@
 		F1A100032F7100010025CED2 /* AppViewModel+SavedRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A100022F7100010025CED2 /* AppViewModel+SavedRoutes.swift */; };
 		F1A100052F7100010025CED2 /* InspectorRouteSectionControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A100042F7100010025CED2 /* InspectorRouteSectionControls.swift */; };
 		F1A100072F7100010025CED2 /* InspectorRouteSectionContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A100062F7100010025CED2 /* InspectorRouteSectionContent.swift */; };
+		F2A200012F7200010025CED2 /* SavedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A200002F7200010025CED2 /* SavedLocation.swift */; };
+		F2A200032F7200010025CED2 /* AppViewModel+SavedLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A200022F7200010025CED2 /* AppViewModel+SavedLocations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -79,6 +81,8 @@
 		F1A100022F7100010025CED2 /* AppViewModel+SavedRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppViewModel+SavedRoutes.swift"; sourceTree = "<group>"; };
 		F1A100042F7100010025CED2 /* InspectorRouteSectionControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorRouteSectionControls.swift; sourceTree = "<group>"; };
 		F1A100062F7100010025CED2 /* InspectorRouteSectionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorRouteSectionContent.swift; sourceTree = "<group>"; };
+		F2A200002F7200010025CED2 /* SavedLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedLocation.swift; sourceTree = "<group>"; };
+		F2A200022F7200010025CED2 /* AppViewModel+SavedLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppViewModel+SavedLocations.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -174,6 +178,7 @@
 			children = (
 				9FF151DF2F5D80350025CED2 /* Device.swift */,
 				9FF151DF2F5D80350025CED3 /* RouteModels.swift */,
+				F2A200002F7200010025CED2 /* SavedLocation.swift */,
 				9FF151E02F5D80350025CED2 /* LocationCoordinate.swift */,
 				9FF151E12F5D80350025CED2 /* SimulationState.swift */,
 			);
@@ -234,6 +239,7 @@
 				B2C3D4E42F5EA0010025CED2 /* AppViewModel+Operations.swift */,
 				F1A100002F7100010025CED2 /* AppViewModel+RouteBuilder.swift */,
 				D1E2F3212F7000010025CED2 /* AppViewModel+RoutePlayback.swift */,
+				F2A200022F7200010025CED2 /* AppViewModel+SavedLocations.swift */,
 				F1A100022F7100010025CED2 /* AppViewModel+SavedRoutes.swift */,
 			);
 			path = ViewModels;
@@ -350,6 +356,7 @@
 				9FF152052F5D80350025CED2 /* InspectorPanelSupportViews.swift in Sources */,
 				9FF151FA2F5D80350025CED2 /* Device.swift in Sources */,
 				9FF151FA2F5D80350025CED3 /* RouteModels.swift in Sources */,
+				F2A200012F7200010025CED2 /* SavedLocation.swift in Sources */,
 				9FF151FB2F5D80350025CED2 /* SimulationState.swift in Sources */,
 				9FF151FC2F5D80350025CED2 /* AppViewModel.swift in Sources */,
 				D1E2F3122F7000010025CED2 /* AppViewModel+Movement.swift in Sources */,
@@ -357,6 +364,7 @@
 				B2C3D4E62F5EA0010025CED2 /* AppViewModel+Operations.swift in Sources */,
 				F1A100012F7100010025CED2 /* AppViewModel+RouteBuilder.swift in Sources */,
 				D1E2F3222F7000010025CED2 /* AppViewModel+RoutePlayback.swift in Sources */,
+				F2A200032F7200010025CED2 /* AppViewModel+SavedLocations.swift in Sources */,
 				F1A100032F7100010025CED2 /* AppViewModel+SavedRoutes.swift in Sources */,
 				C4D5E6F82F6A20010025CED2 /* GPXRouteParser.swift in Sources */,
 				9FF151FD2F5D80350025CED2 /* LocationSimulationService.swift in Sources */,

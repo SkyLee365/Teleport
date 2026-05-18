@@ -73,6 +73,7 @@ final class AppViewModel {
     var routeBuilderSelectedAlternativeIndex: Int = 0
     var routeBuilderLatestSegmentPrefixWaypointCount: Int = 0
     var routeBuilderEditingSavedRouteID: UUID?
+    var savedLocations: [SavedLocation] = []
     var savedRoutes: [SimulatedRoute] = []
     var isRouteBuilderActive: Bool = false
     var routeBuilderMode: RouteBuilderMode = .straightLine
@@ -96,6 +97,7 @@ final class AppViewModel {
         self.routePlaybackSpeedMultiplier = Self.defaultRoutePlaybackSpeedMultiplier
         self.routePlaybackFixedIntervalSeconds = Self.defaultMovementTickIntervalSeconds
         self.routePlaybackTravelSpeedMetersPerSecond = Self.defaultRoutePlaybackTravelSpeedMetersPerSecond
+        self.savedLocations = Self.loadSavedLocations(from: defaults)
         self.savedRoutes = Self.loadSavedRoutes(from: defaults)
     }
 
@@ -145,6 +147,27 @@ final class AppViewModel {
 
     var hasSavedRoutes: Bool {
         !savedRoutes.isEmpty
+    }
+
+    var hasSavedLocations: Bool {
+        !savedLocations.isEmpty
+    }
+
+    var currentCoordinate: LocationCoordinate? {
+        guard
+            let latitude = Double(latitudeText),
+            let longitude = Double(longitudeText),
+            (-90.0...90.0).contains(latitude),
+            (-180.0...180.0).contains(longitude)
+        else {
+            return nil
+        }
+
+        return LocationCoordinate(latitude: latitude, longitude: longitude)
+    }
+
+    var currentLocationCanBeSaved: Bool {
+        currentCoordinate != nil
     }
 
     var loadedSavedRouteIndex: Int? {
@@ -473,6 +496,30 @@ final class AppViewModel {
         } catch {
             TeleportLog.simulation.error(
                 "Failed to persist saved routes: \(error.localizedDescription, privacy: .public)")
+        }
+    }
+
+    private static func loadSavedLocations(from defaults: UserDefaults) -> [SavedLocation] {
+        guard let data = defaults.data(forKey: AppViewModelPreferences.savedLocations) else {
+            return []
+        }
+
+        do {
+            return try JSONDecoder()
+                .decode([SavedLocation].self, from: data)
+                .sorted { $0.createdAt > $1.createdAt }
+        } catch {
+            return []
+        }
+    }
+
+    func persistSavedLocations() {
+        do {
+            let data = try JSONEncoder().encode(savedLocations.sorted { $0.createdAt > $1.createdAt })
+            defaults.set(data, forKey: AppViewModelPreferences.savedLocations)
+        } catch {
+            TeleportLog.simulation.error(
+                "Failed to persist saved locations: \(error.localizedDescription, privacy: .public)")
         }
     }
 }
